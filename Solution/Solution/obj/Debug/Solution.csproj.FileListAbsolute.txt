@@ -13,3 +13,6 @@ D:\projects\projects\Solution\Solution\obj\Debug\Solution.pdb
 D:\projects\projects\Solution\Solution\bin\Debug\bin\Debug\Maps\Map1.txt
 D:\projects\projects\Solution\Solution\bin\Debug\bin\Debug\Maps\Map2.txt
 D:\projects\projects\Solution\Solution\bin\Debug\bin\Debug\Maps\Map3.txt
+D:\projects\projects\Solution\Solution\bin\Debug\Maps\Map1.txt
+D:\projects\projects\Solution\Solution\bin\Debug\Maps\Map2.txt
+D:\projects\projects\Solution\Solution\bin\Debug\Maps\Map3.txt

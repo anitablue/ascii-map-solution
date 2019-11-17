@@ -71,6 +71,7 @@
     <Content Include="bin\Debug\Maps\Map1.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="bin\Debug\Maps\Map10.txt" />
     <Content Include="bin\Debug\Maps\Map2.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -79,6 +80,10 @@
     </Content>
     <Content Include="bin\Debug\Maps\Map4.txt" />
     <Content Include="bin\Debug\Maps\Map5.txt" />
+    <Content Include="bin\Debug\Maps\Map6.txt" />
+    <Content Include="bin\Debug\Maps\Map7.txt" />
+    <Content Include="bin\Debug\Maps\Map8.txt" />
+    <Content Include="bin\Debug\Maps\Map9.txt" />
     <Content Include="bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.dll" />
     <Content Include="bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.dll" />
     <Content Include="bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.Interface.dll" />

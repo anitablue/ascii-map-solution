@@ -42,12 +42,13 @@ namespace Solution
             InitializeSolver(asciiMap);
             
             TrackingNode startNode = GetTrackingNode(asciiMap.Start);//Start 
+            TrackingNode finishNode = GetTrackingNode(asciiMap.Finish);//Finish
             startNode.Predecessor = null;
             startNode.VisitedState = NodeVisitedState.Visited;
             listOfChars.Add(startNode);
             
             startNode.Direction = GetStartDirection( startNode);
-            int count = CountStartDirections(asciiMap.Start);
+            int count = CountStartDirections( startNode );
 
             if( startNode.Direction.Equals ( Direction.Null ) || count <= 0 || count > 1)// no nodes conected
             {
@@ -77,7 +78,7 @@ namespace Solution
                         listOfChars.Add(currentNode);
                     }
                 }
-               else if (IsGoal(currentNode, asciiMap))
+               else if (IsGoal(currentNode, finishNode))
                 {
                     results.Path = listOfChars.ToList();
                     results.Letters = listOfLetters.ToList();
@@ -90,7 +91,7 @@ namespace Solution
                     {
                         nextNode = NextTrackingNode(currentNode, currentNode.Direction);
                         if (nextNode != null) {
-                            if (!IsValid(nextNode.RowPosition, nextNode.ColPosition) && !IsWall(nextNode))
+                            if (!IsNotValid(nextNode.RowPosition, nextNode.ColPosition) && !IsWall(nextNode))
                             {
                                 if (nextNode.VisitedState != NodeVisitedState.Visited)
                                 {
@@ -184,6 +185,19 @@ namespace Solution
                         }
                     }
                 }
+
+                if (currentNode.ContentState == NodeContentState.HorizontalChar && 
+                    !(currentNode.Direction == Direction.Left || currentNode.Direction == Direction.Right) && currentNode.VisitedMoreTimes == false )
+                {
+
+                    throw new Exception(string.Format("Ascii map is invalid"));
+                }
+                if (currentNode.ContentState == NodeContentState.VerticalChar &&
+                    !(currentNode.Direction == Direction.Up || currentNode.Direction == Direction.Down) && currentNode.VisitedMoreTimes == false)
+                {
+
+                    throw new Exception(string.Format("Ascii map is invalid"));
+                }
             }
         }
         /// <summary>
@@ -222,7 +236,7 @@ namespace Solution
         /// <param name="rowPosition"></param>
         /// <param name="colPosition"></param>
         /// <returns></returns>
-        public bool IsValid(int rowPosition, int colPosition)
+        public bool IsNotValid(int rowPosition, int colPosition)
         {
             return (rowPosition < 0 || rowPosition >= this.Height || colPosition < 0 || colPosition >= this.Width);
         }
@@ -247,7 +261,7 @@ namespace Solution
             bool isValid = false;
 
             nextNodeUp = new TrackingNode(startNode.RowPosition - 1, startNode.ColPosition);
-            isValid = IsValid(nextNodeUp.RowPosition, nextNodeUp.ColPosition);
+            isValid = IsNotValid(nextNodeUp.RowPosition, nextNodeUp.ColPosition);
 
             if (!isValid)
             {
@@ -258,7 +272,7 @@ namespace Solution
             }
 
             nextNodeDown = new TrackingNode(startNode.RowPosition + 1, startNode.ColPosition);
-            isValid = IsValid(nextNodeDown.RowPosition, nextNodeDown.ColPosition);
+            isValid = IsNotValid(nextNodeDown.RowPosition, nextNodeDown.ColPosition);
             var node = _trackingNodes[nextNodeDown.RowPosition, nextNodeDown.ColPosition];
             if (!isValid)
             {
@@ -269,7 +283,7 @@ namespace Solution
             }
 
             nextNodeRight = new TrackingNode(startNode.RowPosition, startNode.ColPosition + 1);
-            isValid = IsValid(nextNodeRight.RowPosition, nextNodeRight.ColPosition);
+            isValid = IsNotValid(nextNodeRight.RowPosition, nextNodeRight.ColPosition);
 
             if (!isValid)
             {
@@ -280,7 +294,7 @@ namespace Solution
             }
 
             nextNodeLeft = new TrackingNode(startNode.RowPosition, startNode.ColPosition - 1);
-            isValid = IsValid(nextNodeLeft.RowPosition, nextNodeLeft.ColPosition);
+            isValid = IsNotValid(nextNodeLeft.RowPosition, nextNodeLeft.ColPosition);
             if (!isValid)
             {
                 if (!IsWall(_trackingNodes[nextNodeLeft.RowPosition, nextNodeLeft.ColPosition]))
@@ -305,7 +319,7 @@ namespace Solution
             if(node.Direction == Direction.Right || node.Direction == Direction.Left)
             {
                 nextNodeUp = new TrackingNode(node.RowPosition - 1, node.ColPosition);
-                isValid = IsValid(nextNodeUp.RowPosition, nextNodeUp.ColPosition);
+                isValid = IsNotValid(nextNodeUp.RowPosition, nextNodeUp.ColPosition);
 
                 if (!isValid)
                 {
@@ -317,7 +331,7 @@ namespace Solution
                 }
 
                 nextNodeDown = new TrackingNode(node.RowPosition + 1, node.ColPosition);
-                isValid = IsValid(nextNodeDown.RowPosition, nextNodeDown.ColPosition);
+                isValid = IsNotValid(nextNodeDown.RowPosition, nextNodeDown.ColPosition);
 
                 if (!isValid)
                 {
@@ -332,7 +346,7 @@ namespace Solution
             if (node.Direction == Direction.Down || node.Direction == Direction.Up)
             {
                 nextNodeRight = new TrackingNode(node.RowPosition, node.ColPosition + 1);
-                isValid = IsValid(nextNodeRight.RowPosition, nextNodeRight.ColPosition);
+                isValid = IsNotValid(nextNodeRight.RowPosition, nextNodeRight.ColPosition);
 
                 if (!isValid)
                 {
@@ -344,7 +358,7 @@ namespace Solution
                 }
 
                 nextNodeLeft = new TrackingNode(node.RowPosition, node.ColPosition - 1);
-                isValid = IsValid(nextNodeLeft.RowPosition, nextNodeLeft.ColPosition);
+                isValid = IsNotValid(nextNodeLeft.RowPosition, nextNodeLeft.ColPosition);
 
                 if (!isValid)
                 {
@@ -383,7 +397,7 @@ namespace Solution
                     rowPosition--;
                     break;
             }
-            var valid = IsValid(rowPosition, colPosition);
+            var valid = IsNotValid(rowPosition, colPosition);
 
             return !valid ? _trackingNodes[rowPosition, colPosition] : null;
         }
@@ -394,26 +408,25 @@ namespace Solution
         /// <param name="asciiMap"></param>
         /// <returns></returns>
 
-        public bool IsGoal(TrackingNode curNode, IAsciiMap asciiMap)
+        public bool IsGoal(TrackingNode curNode, TrackingNode finishNode)
         {
-            TrackingNode finish = GetTrackingNode(asciiMap.Finish);
             if (curNode == null)
                 return false;
-            return  curNode.Content.Equals(finish.Content);
+            return  curNode.Content.Equals(finishNode.Content);
         }
         /// <summary>
         /// Count all possible start directions
         /// </summary>
         /// <param name="startNode"></param>
         /// <returns></returns>
-        public int CountStartDirections(INode startNode)
+        public int CountStartDirections(TrackingNode startNode)
         {
             TrackingNode nextNodeLeft, nextNodeRight, nextNodeUp, nextNodeDown = null;
             bool isValid = false;
             int count = 0;
 
             nextNodeUp = new TrackingNode(startNode.RowPosition - 1, startNode.ColPosition);
-            isValid = IsValid(nextNodeUp.RowPosition, nextNodeUp.ColPosition);
+            isValid = IsNotValid(nextNodeUp.RowPosition, nextNodeUp.ColPosition);
 
             if (!isValid)
             {
@@ -424,7 +437,7 @@ namespace Solution
             }
 
             nextNodeDown = new TrackingNode(startNode.RowPosition + 1, startNode.ColPosition);
-            isValid = IsValid(nextNodeDown.RowPosition, nextNodeDown.ColPosition);
+            isValid = IsNotValid(nextNodeDown.RowPosition, nextNodeDown.ColPosition);
             if (!isValid)
             {
                 if (!IsWall(_trackingNodes[nextNodeDown.RowPosition, nextNodeDown.ColPosition]))
@@ -434,7 +447,7 @@ namespace Solution
             }
 
             nextNodeRight = new TrackingNode(startNode.RowPosition, startNode.ColPosition + 1);
-            isValid = IsValid(nextNodeRight.RowPosition, nextNodeRight.ColPosition);
+            isValid = IsNotValid(nextNodeRight.RowPosition, nextNodeRight.ColPosition);
             bool notWall = IsWall(_trackingNodes[nextNodeRight.RowPosition, nextNodeRight.ColPosition]);
 
             if (!isValid)
@@ -445,7 +458,7 @@ namespace Solution
                 }
             }
             nextNodeLeft = new TrackingNode(startNode.RowPosition, startNode.ColPosition - 1);
-            isValid = IsValid(nextNodeLeft.RowPosition, nextNodeLeft.ColPosition);
+            isValid = IsNotValid(nextNodeLeft.RowPosition, nextNodeLeft.ColPosition);
             if (!isValid)
             {
                 if (!IsWall(_trackingNodes[nextNodeLeft.RowPosition, nextNodeLeft.ColPosition]))
@@ -470,7 +483,7 @@ namespace Solution
             if (node.Direction == Direction.Right || node.Direction == Direction.Left)
             {
                 nextNodeUp = new TrackingNode(node.RowPosition - 1, node.ColPosition);
-                isValid = IsValid(nextNodeUp.RowPosition, nextNodeUp.ColPosition);
+                isValid = IsNotValid(nextNodeUp.RowPosition, nextNodeUp.ColPosition);
 
                 if (!isValid)
                 {
@@ -482,7 +495,7 @@ namespace Solution
                 }
 
                 nextNodeDown = new TrackingNode(node.RowPosition + 1, node.ColPosition);
-                isValid = IsValid(nextNodeDown.RowPosition, nextNodeDown.ColPosition);
+                isValid = IsNotValid(nextNodeDown.RowPosition, nextNodeDown.ColPosition);
 
                 if (!isValid)
                 {
@@ -497,7 +510,7 @@ namespace Solution
             if (node.Direction == Direction.Down || node.Direction == Direction.Up)
             {
                 nextNodeRight = new TrackingNode(node.RowPosition, node.ColPosition + 1);
-                isValid = IsValid(nextNodeRight.RowPosition, nextNodeRight.ColPosition);
+                isValid = IsNotValid(nextNodeRight.RowPosition, nextNodeRight.ColPosition);
 
                 if (!isValid)
                 {
@@ -509,7 +522,7 @@ namespace Solution
                 }
 
                 nextNodeLeft = new TrackingNode(node.RowPosition, node.ColPosition - 1);
-                isValid = IsValid(nextNodeLeft.RowPosition, nextNodeLeft.ColPosition);
+                isValid = IsNotValid(nextNodeLeft.RowPosition, nextNodeLeft.ColPosition);
 
                 if (!isValid)
                 {

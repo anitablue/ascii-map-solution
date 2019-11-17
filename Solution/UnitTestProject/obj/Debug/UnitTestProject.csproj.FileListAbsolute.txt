@@ -31,3 +31,6 @@ D:\projects\projects\Solution\UnitTestProject\obj\Debug\UnitTestProject.pdb
 D:\projects\projects\Solution\UnitTestProject\bin\Debug\bin\Debug\Maps\Map1.txt
 D:\projects\projects\Solution\UnitTestProject\bin\Debug\bin\Debug\Maps\Map2.txt
 D:\projects\projects\Solution\UnitTestProject\bin\Debug\bin\Debug\Maps\Map3.txt
+D:\projects\projects\Solution\UnitTestProject\bin\Debug\Maps\Map1.txt
+D:\projects\projects\Solution\UnitTestProject\bin\Debug\Maps\Map2.txt
+D:\projects\projects\Solution\UnitTestProject\bin\Debug\Maps\Map3.txt
